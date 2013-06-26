@@ -171,7 +171,7 @@ return (function(root) {
    * @param  {Table} properties a set of key/value pairs to look for
    * @return {Table}            the first value in list matching all properties
    */
-  _.findWhere <- function(list, properties) {
+  _.findwhere <- _.findWhere <- function(list, properties) {
     foreach(item in list) {
       local doesMatch = true;
 
@@ -188,6 +188,149 @@ return (function(root) {
     }
 
     return null;
+  };
+
+  /**
+   * Returns the values in list without the elements that the truth test 
+   * (iterator) passes. The opposite of filter.
+   *
+   * @param  {Array}    list     the array to search through
+   * @param  {Function} iterator "truth test" function used to reject values
+   * @param  {Table}    context  an optional context
+   * @return {Array}             a new array containing the non-rejected values
+   */
+  _.reject <- function(list, iterator, context = this) {
+    local results = [];
+
+    foreach(idx, val in list) {
+      if(!iterator.call(context, val, idx, list)) {
+        results.push(val);
+      }
+    }
+
+    return results;
+  };
+
+  /**
+   * Returns true if all of the values in the list pass the iterator truth test.
+   *
+   * @param  {Array}    list     the array to search through
+   * @param  {Function} iterator "truth test" function used to check all values
+   * @param  {Table}    context  an optional context
+   * @return {Boolean}           true if all values pass the truth test
+   */
+  _.every <- _.all <- function(list, iterator, context = this) {
+    local result = true;
+    
+    if(list == null) {
+      return result;
+    }
+
+    foreach(idx, val in list) {
+      result = result && iterator.call(context, val, idx, list);
+      
+      if(!result) {
+        break;
+      }
+    }
+
+    return !!result;
+  };
+
+  /**
+   * Returns true if any of the values in the list pass the iterator truth test.
+   * Short-circuits and stops traversing the list if a true element is found.
+   *
+   * @param  {Array}    list     a list of values to check
+   * @param  {Function} iterator a truth text function to check against values
+   * @param  {Table}    context  an optional context
+   * @return {Boolean}           true if any values in list match the truth test
+   */
+  _.some <- _.any <- function(list, iterator, context = this) {
+    local result = false;
+
+    foreach(idx, val in list) {
+      if(iterator.call(context, val, idx, list)) {
+        result = true;
+        break;
+      }
+    }
+
+    return result;
+  };
+
+  /**
+   * Returns true if the value is present in the list. Uses find internally, if
+   * list is an Array.
+   *
+   * @param  {Array|Table} list  an array or table to search in for the value
+   * @param  {Value}       value the value to search for
+   * @return {Boolean}           true if list contains value, otherwise false
+   */
+  _.contains <- _.include <- function(list, value) {
+    if(typeof list == "array") {
+      return list.find(value) != null;
+    } else if(typeof list == "table") {
+      local values = _.values(list);
+      return values.find(value) != null;
+    }
+  };
+
+  /**
+   * Calls the method named by methodName on each value in the list. Any extra
+   * arguments passed to invoke will be forwarded on to the method invocation.
+   *
+   * @param  {Array|Table} list       a list of values to invoke methodName on
+   * @param  {String}      methodName the name of a method to call
+   * @return {Value}                  the original list after invocations
+   */
+  _.invoke <- function(list, methodName, ...) {
+    local arguments = clone vargv;
+    local methodHasArgs = false;
+
+    // Make room for "this"
+    arguments.insert(0, null)
+
+    foreach(ixd, val in list) {
+      arguments[0] = val;
+      val[methodName].acall(arguments);
+    }
+
+    return list;
+  };
+
+  /**
+   * A convenient version of what is perhaps the most common use-case for map: 
+   * extracting a list of property values.
+   *
+   * @param  {Array}  list         an array of tables to search through
+   * @param  {String} propertyName the property to look for in each value
+   * @return {Array}               an array of the plucked values from each item
+   */
+  _.pluck <- function(list, propertyName) {
+    local results = [];
+
+    foreach(idx, item in list) {
+      if(propertyName in item) {
+        results.push(item[propertyName]);
+      }
+    }
+
+    return results;
+  };
+
+  /**
+   * Return the number of values in the list.
+   *
+   * @param  {Array|Table} list the list to get the size of
+   * @return {Integer}          the number of values in list
+   */
+  _.size <- function(list) {
+    if(typeof list == "array") {
+      return list.len();
+    } else if(typeof list == "table") {
+      return _.values(list).len();
+    }
   };
 
   /**
@@ -440,7 +583,7 @@ return (function(root) {
    * @param  {Array|Table} collection the collection to check for emptiness
    * @return {Boolean}                true if collection has no values
    */
-  _.isEmpty <- function(collection) {
+  _.isempty <- _.isEmpty <- function(collection) {
     if(typeof collection == "table") {
       return _.slots(collection).len() == 0;
     } else if(typeof collection == "array") {
@@ -456,7 +599,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isArray <- function(object) {
+  _.isarray <- _.isArray <- function(object) {
     return typeof object == "array";
   };
 
@@ -466,7 +609,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isTable <- function(object) {
+  _.istable <- _.isTable <- function(object) {
     return typeof object == "table";
   };
 
@@ -476,7 +619,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isFunction <- function(object) {
+  _.isfunction <- _.isFunction <- function(object) {
     return typeof object == "function";
   };
 
@@ -486,7 +629,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isString <- function(object) {
+  _.isstring <- _.isString <- function(object) {
     return typeof object == "string";
   };
 
@@ -496,7 +639,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isInteger <- function(object) {
+  _.isinteger <- _.isInteger <- function(object) {
     return typeof object == "integer";
   };
 
@@ -506,7 +649,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isFloat <- function(object) {
+  _.isfloat <- _.isFloat <- function(object) {
     return typeof object == "float";
   };
 
@@ -516,7 +659,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isNumber <- function(object) {
+  _.isnumber <- _.isNumber <- function(object) {
     return isInteger(object) || isFloat(object);
   };
 
@@ -526,7 +669,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isBoolean <- function(object) {
+  _.isboolean <- _.isBoolean <- function(object) {
     return typeof object == "boolean";
   };
 
@@ -536,7 +679,7 @@ return (function(root) {
    * @param  {[type]} object [description]
    * @return {[type]}        [description]
    */
-  _.isNull <- function(object) {
+  _.isnull <- _.isNull <- function(object) {
     return typeof object == "null";
   };
 
