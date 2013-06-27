@@ -446,8 +446,10 @@ return (function(root) {
     return result;
   };
 
-  // Inner recursive function to flatten
+  // Inner recursive function to flatten an array.
+  // It needs to be declared first so it can reference itself when it recurses.
   local _flatten = null;
+
   _flatten = function(list, shallow, output) {
     foreach(idx, val in list) {
       if(_.isarray(val)) {
@@ -474,6 +476,63 @@ return (function(root) {
    */
   _.flatten <- function(list, shallow = false) {
     return _flatten(list, shallow, []);
+  };
+
+  /**
+   * Returns a copy of the array with all instances of the values removed.
+   *
+   * @param  {Array} arr the array to remove values from
+   * @param  {Value} ... any number of values to exclude
+   * @return {Array}     a copy of arr with all specified values removed
+   */
+  _.without <- function(arr, ...) {
+    return _.difference.call(this, arr, vargv);
+  };
+
+  /**
+   * Converts arrays into tables. Pass either a single list of `[slot, value]`
+   * pairs, or a list of slots, and a list of values.
+   *
+   * @param  {Array} list   array of slot names or array of [slot, value] arrays
+   * @param  {Array} values used as array of values if list is only slot names
+   * @return {Table}        a new table of merged slots and values
+   */
+  _.table <- function(list, values = null) {
+    if(!list) {
+      return {};
+    }
+
+    local result = {};
+
+    foreach(idx, val in list) {
+      if(values) {
+        result[val] <- values[idx];
+      } else {
+        result[val[0]] <- val[1];
+      }
+    }
+
+    return result;
+  };
+
+  /**
+   * Similar to without, but returns the values from array that are not present
+   * in the other arrays.
+   * 
+   * @param  {Array}  arr the original array
+   * @param  {Array*} ... one or more arrays containing values to filter out
+   * @return {Array}      a new array without any values from other arrays
+   */
+  _.difference <- function(arr, ...) {
+    local rest = [];
+
+    foreach(index, otherArray in vargv) {
+      rest.extend(otherArray);
+    }
+
+    return _.filter(arr, function(value, ...) {
+      return !_.contains(rest, value);
+    });
   };
 
   //
