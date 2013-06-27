@@ -333,6 +333,153 @@ return (function(root) {
     }
   };
 
+  //
+  // Array Functions
+  //
+
+  /**
+   * Returns the first element of an array. Passing n will return the first n
+   * elements of the array.
+   *
+   * @param  {Array}   list the array to get items from
+   * @param  {Integer} n    the number of items to get from the front of list
+   * @return {Array}        a new array containing the first n items of list
+   */
+  _.first <- function(list, n = 1) {
+    local result = [];
+
+    if(n > 0) {
+      if(n > list.len()) {
+        n = list.len();
+      }
+
+      result = list.slice(0, n);
+    }
+
+    return result;
+  };
+
+  /**
+   * Returns everything but the last entry of the array. Pass n to exclude the
+   * last n elements from the result.
+   *
+   * @param  {Array} list the array to get items from
+   * @param  {Integer}    the number if items to exclude from the end of list
+   * @return {Array}      a new array containing values not excluded
+   */
+  _.initial <- function(list, n = 1) {
+    local result = [];
+
+    if(n > 0) {
+      if(n >= list.len()) {
+        n = 0;
+      }
+
+      result = list.slice(0, list.len() - n);
+    }
+
+    return result;
+  };
+
+  /**
+   * Returns the last element of an array. Passing n will return the last n
+   * elements of the array.
+   *
+   * @param  {Array}   list the array to get items from
+   * @param  {Integer} n    optional number of items to return from end of list
+   * @return {Array}        a new array containing the last n items from list
+   */
+  _.last <- function(list, n = 1) {
+    local result = [];
+
+    if(n > 0) {
+      if(n > list.len()) {
+        n = list.len();
+      }
+      
+      result = list.slice(-n);
+    }
+
+    return result;
+  };
+
+  /**
+   * Returns the rest of the elements in an array. Pass an index to return the
+   * values of the array from that index onward.
+   *
+   * @param  {Array}   list  the array to get items from
+   * @param  {Integer} index optional index to start from
+   * @return {Array}         all values in list after index
+   */
+  _.rest <- function(list, index = 1) {
+    local result = [];
+
+    if(index < 1) {
+      index = 0;
+    }
+
+    if(index > list.len()) {
+      index = list.len();
+    }
+
+    result = list.slice(index);
+
+    return result;
+  };
+
+  /**
+   * Returns a copy of the array with all falsy values removed. In Squirrel, 
+   * null, 0 (integer) and 0.0 (float) are all falsy.
+   *
+   * @param  {Array} list the list to compact
+   * @return {Array}      a new array with falsy values removed
+   */
+  _.compact <- function(list) {
+    local result = [];
+
+    foreach(idx, val in list) {
+      if(val) {
+        result.push(val);
+      }
+    }
+
+    return result;
+  };
+
+  // Inner recursive function to flatten
+  local _flatten = null;
+  _flatten = function(list, shallow, output) {
+    foreach(idx, val in list) {
+      if(_.isarray(val)) {
+        if(shallow) {
+          output.extend(val);
+        } else {
+          _flatten(val, shallow, output);
+        }
+      } else {
+        output.push(val);
+      }
+    }
+
+    return output;
+  };
+
+  /**
+   * Flattens a nested array (the nesting can be to any depth). If you pass 
+   * shallow, the array will only be flattened a single level.
+   *
+   * @param  {Array}   list    an array to flatten (may contain nested arrays)
+   * @param  {Boolean} shallow true if you only want one level deep flattened
+   * @return {Array}           a flattened version of list
+   */
+  _.flatten <- function(list, shallow = false) {
+    return _flatten(list, shallow, []);
+  };
+
+  //
+  // Table Functions
+  //
+
   /**
    * Retrieve all the names of a table's slots.
    *
