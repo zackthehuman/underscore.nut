@@ -141,13 +141,6 @@ return (function(root) {
    * @return {Array}             a new array of values that pass the filter
    */
   _.filter <- function(list, iterator, context = this) {
-    // Could use native array's filter method but it's iterface swaps the index
-    // and value positions.
-    
-    // return list.filter(
-    //   iterator.bindenv(context)
-    // );
-    
     local results = [];
 
     foreach(idx, val in list) {
@@ -342,6 +335,33 @@ return (function(root) {
     }
 
     return results;
+  };
+
+  /**
+   * Returns the maximum value in list. If iterator is passed, it will be used
+   * on each value to generate the criterion by which the value is ranked.
+   *
+   * @param  {Array}    list     the list of values to find the max within
+   * @param  {Function} iterator an optional "criteria" function
+   * @param  {Table}    context  an optional context to execute iterator with
+   * @return {Value}             the maximum value in list
+   */
+  _.max <- function(list, iterator = _.identity, context = this) {
+    local result;
+
+    if(list.len() > 0) {
+      result = list[0];
+
+      if(list.len() > 1) {
+        foreach(idx, val in list) {
+          if(val > result) {
+            result = val;
+          }
+        }
+      }
+    }
+
+    return result;
   };
 
   /**
