@@ -84,6 +84,31 @@ return (function(root) {
   };
 
   /**
+   * Also known as inject and foldl, reduce boils down a list of values into a 
+   * single value. Memo is the initial state of the reduction, and each 
+   * successive step of it should be returned by iterator. The iterator is 
+   * passed four arguments: the memo, then the value and index (or key) of the 
+   * iteration, and finally a reference to the entire list.
+   *
+   * @param  {Array}    list     the list of values to reduce
+   * @param  {Function} iterator an iterator function to call for each reduction
+   * @param  {Value}    memo     the initial value of the reduction
+   * @param  {Table}    context  optional context to call iterator with
+   * @return {Value}             the vale of list as reduced by iterator
+   */
+  _.reduce <- _.inject <- _.foldl <- function(list, iterator, memo, context = this) {
+    if(list == null) {
+      list = [];
+    }
+
+    _.each(list, function(value, index, list) {
+      memo = iterator.call(context, memo, value, index, list);
+    });
+
+    return memo;
+  };
+
+  /**
    * Looks through each value in the list, returning the first one that passes a
    * truth test (iterator). The function returns as soon as it finds an 
    * acceptable element, and doesn't traverse the entire list.
