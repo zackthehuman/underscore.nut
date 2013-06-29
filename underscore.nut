@@ -29,7 +29,7 @@ return (function(root) {
   /**
    * Returns the same value that is used as the argument.
    */
-  _.identity <- function(value) {
+  _.identity <- function(value, ...) {
     return value;
   };
 
@@ -559,6 +559,27 @@ return (function(root) {
    */
   _.without <- function(arr, ...) {
     return _.difference.call(this, arr, vargv);
+  };
+
+  _.uniq <- _.unique <- function(arr, isSorted = false, iterator = _.identity, context = this) {
+    if (_.isfunction(isSorted)) {
+      context = iterator;
+      iterator = isSorted;
+      isSorted = false;
+    }
+
+    local initial = iterator ? _.map(arr, iterator, context) : arr;
+    local results = [];
+    local seen = [];
+
+    _.each(initial, function(value, index, ...) {
+      if (isSorted ? (!index || seen[seen.len() - 1] != value) : !_.contains(seen, value)) {
+        seen.push(value);
+        results.push(arr[index]);
+      }
+    });
+
+    return results;
   };
 
   /**
