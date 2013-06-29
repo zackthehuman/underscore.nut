@@ -365,6 +365,33 @@ return (function(root) {
   };
 
   /**
+   * Returns the minimum value in list. If iterator is passed, it will be used
+   * on each value to generate the criterion by which the value is ranked.
+   *
+   * @param  {Array}    list     the list of values to find the min within
+   * @param  {Function} iterator an optional "criteria" function
+   * @param  {Table}    context  an optional context to execute iterator with
+   * @return {Value}             the minimum value in list
+   */
+  _.min <- function(list, iterator = _.identity, context = this) {
+    local result;
+
+    if(list.len() > 0) {
+      result = list[0];
+
+      if(list.len() > 1) {
+        foreach(idx, val in list) {
+          if(val < result) {
+            result = val;
+          }
+        }
+      }
+    }
+
+    return result;
+  };
+
+  /**
    * Return the number of values in the list.
    *
    * @param  {Array|Table} list the list to get the size of
