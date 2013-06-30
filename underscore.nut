@@ -561,6 +561,18 @@ return (function(root) {
     return _.difference.call(this, arr, vargv);
   };
 
+  /**
+   * Produces a duplicate-free version of the array. If you know in advance that
+   * the array is sorted, passing true for isSorted will run a much faster 
+   * algorithm. If you want to compute unique items based on a transformation, 
+   * pass an iterator function.
+   * 
+   * @param  {Array}    arr      an array of values to de-duplicate
+   * @param  {Boolean}  isSorted true if you know arr is in-order already
+   * @param  {Function} iterator optional transofmration function
+   * @param  {Table}    context  optional context to execute iterator with
+   * @return {Array}             a duplicate-free version of arr
+   */
   _.uniq <- _.unique <- function(arr, isSorted = false, iterator = _.identity, context = this) {
     if (_.isfunction(isSorted)) {
       context = iterator;
@@ -573,7 +585,7 @@ return (function(root) {
     local seen = [];
 
     _.each(initial, function(value, index, ...) {
-      if (isSorted ? (!index || seen[seen.len() - 1] != value) : !_.contains(seen, value)) {
+      if(isSorted ? (!index || seen[seen.len() - 1] != value) : !_.contains(seen, value)) {
         seen.push(value);
         results.push(arr[index]);
       }
