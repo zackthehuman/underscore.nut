@@ -621,6 +621,42 @@ return (function(root) {
   };
 
   /**
+   * Returns the index at which value can be found in the array, or -1 if value
+   * is not present in the array.
+   *
+   * @param  {Array}   arr  an array to search for item in
+   * @param  {Value}   item a value to find the index of
+   * @return {Integer}      the index of value if found, or -1 if not found
+   */
+  _.indexof <- _.indexOf <- function(arr, item) {
+    local found = arr.find(item);
+
+    if(found != null) {
+      return found;
+    }
+
+    return -1;
+  };
+
+  /**
+   * Computes the list of values that are the intersection of all the arrays.
+   * Each value in the result is present in each of the arrays.
+   *
+   * @param  {Array} arr one or more arrays to find the intersection of
+   * @return {Array}     a new array containing values that are present in all
+   *                     of the arrays specified
+   */
+  _.intersection <- function(arr, ...) {
+    local rest = vargv;
+
+    return _.filter(_.uniq(arr), function(item, ...) {
+      return _.every(rest, function(other, ...) {
+        return _.indexof(other, item) >= 0;
+      });
+    });
+  };
+
+  /**
    * Similar to without, but returns the values from array that are not present
    * in the other arrays.
    * 
