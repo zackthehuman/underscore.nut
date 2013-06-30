@@ -562,6 +562,63 @@ return (function(root) {
   };
 
   /**
+   * Computes the union of the passed-in arrays: the list of unique items, in 
+   * order, that are present in one or more of the arrays.
+   *
+   * @param  {Array} arr one or more arrays to find the union of
+   * @return {Array}     a new array containing the list of unique items
+   */
+  _.union <- function(arr, ...) {
+    local result = [];
+
+    result.extend(arr);
+
+    foreach(idx, other in vargv) {
+      result.extend(other);
+    }
+
+    return _.uniq(result);
+  };
+
+  /**
+   * Computes the list of values that are the intersection of all the arrays.
+   * Each value in the result is present in each of the arrays.
+   *
+   * @param  {Array} arr one or more arrays to find the intersection of
+   * @return {Array}     a new array containing values that are present in all
+   *                     of the arrays
+   */
+  _.intersection <- function(arr, ...) {
+    local rest = vargv;
+
+    return _.filter(_.uniq(arr), function(item, ...) {
+      return _.every(rest, function(other, ...) {
+        return _.indexof(other, item) >= 0;
+      });
+    });
+  };
+
+  /**
+   * Similar to without, but returns the values from array that are not present
+   * in the other arrays.
+   * 
+   * @param  {Array}  arr the original array
+   * @param  {Array*} ... one or more arrays containing values to filter out
+   * @return {Array}      a new array without any values from other arrays
+   */
+  _.difference <- function(arr, ...) {
+    local rest = [];
+
+    foreach(index, otherArray in vargv) {
+      rest.extend(otherArray);
+    }
+
+    return _.filter(arr, function(value, ...) {
+      return !_.contains(rest, value);
+    });
+  };
+
+  /**
    * Produces a duplicate-free version of the array. If you know in advance that
    * the array is sorted, passing true for isSorted will run a much faster 
    * algorithm. If you want to compute unique items based on a transformation, 
@@ -636,44 +693,6 @@ return (function(root) {
     }
 
     return -1;
-  };
-
-  /**
-   * Computes the list of values that are the intersection of all the arrays.
-   * Each value in the result is present in each of the arrays.
-   *
-   * @param  {Array} arr one or more arrays to find the intersection of
-   * @return {Array}     a new array containing values that are present in all
-   *                     of the arrays specified
-   */
-  _.intersection <- function(arr, ...) {
-    local rest = vargv;
-
-    return _.filter(_.uniq(arr), function(item, ...) {
-      return _.every(rest, function(other, ...) {
-        return _.indexof(other, item) >= 0;
-      });
-    });
-  };
-
-  /**
-   * Similar to without, but returns the values from array that are not present
-   * in the other arrays.
-   * 
-   * @param  {Array}  arr the original array
-   * @param  {Array*} ... one or more arrays containing values to filter out
-   * @return {Array}      a new array without any values from other arrays
-   */
-  _.difference <- function(arr, ...) {
-    local rest = [];
-
-    foreach(index, otherArray in vargv) {
-      rest.extend(otherArray);
-    }
-
-    return _.filter(arr, function(value, ...) {
-      return !_.contains(rest, value);
-    });
   };
 
   //
