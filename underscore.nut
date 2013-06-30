@@ -391,6 +391,54 @@ return (function(root) {
     return result;
   };
 
+  // Helper function the returns value as a function. Used to generate a 
+  // criteria function for _.sortby.
+  local lookupIterator = function(value) {
+    return _.isfunction(value) ? value : function(obj, ...) { return obj[value]; };
+  };
+
+  /**
+   * Returns a sorted copy of list, ranked in ascending order by the results of 
+   * running each value through iterator. Iterator may also be the string name 
+   * of a slot name to sort by.
+   *
+   * @param  {Array}           list     an array of value to sort
+   * @param  {Function|String} iterator a function that provides sort criteria,
+   *                                    or the slot name to sort all values by
+   * @param  {Table}           context  optional context to call iterator with
+   * @return {Array}                    a new array containing the values in a
+   *                                    sorted order according to iterator
+   */
+  _.sortby <- _.sortBy <- function(list, iterator, context = this) {
+    local iterator = lookupIterator(iterator);
+    local mappedCriteria = _.map(list, function(value, index, theList) {
+      return {
+        value = value
+        index = index
+        criteria = iterator.call(context, value, index, theList)
+      };
+    });
+
+    mappedCriteria.sort(function(left, right) {
+      local a = left.criteria;
+      local b = right.criteria;
+
+      if(a != b) {
+        if(a > b || a == null) {
+          return 1;
+        }
+
+        if(a < b || b == null) {
+          return -1;
+        }
+      }
+
+      return left.index < right.index ? -1 : 1;
+    });
+
+    return _.pluck(mappedCriteria, "value");
+  };
+
   /**
    * Return the number of values in the list.
    *
