@@ -478,6 +478,27 @@ return (function(root) {
   };
 
   /**
+   * Sorts a list into groups and returns a count for the number of objects in 
+   * each group. Similar to groupby, but instead of returning a list of values, 
+   * returns a count for the number of values in that group.
+   *
+   * @param  {Array|Table}     list     an array or table to count the groups of
+   * @param  {Function|String} iterator function that generates a group name
+   * @param  {Table}           context  optional context to call iterator with
+   * @return {Table}                    a new table containing the count of 
+   *                                    grouped values
+   */
+  _.countby <- _.countBy <- function(list, iterator = _.identity, context = this) {
+    return groupHelper(list, iterator, function(result, key, value) {
+      if(!_.has(result, key)) {
+        result[key] <- 0;
+      }
+
+      result[key]++;
+    }, context);
+  };
+
+  /**
    * Return the number of values in the list.
    *
    * @param  {Array|Table} list the list to get the size of
