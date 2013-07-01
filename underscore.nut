@@ -439,6 +439,44 @@ return (function(root) {
     return _.pluck(mappedCriteria, "value");
   };
 
+  // Helper function to facilitate grouping objects by some critera.
+  local groupHelper = function(list, value, behavior, context = this) {
+    local result = {};
+    local iterator = lookupIterator(value);
+
+    _.each(list, function(value, index, ...) {
+      local key = iterator.call(context, value, index, list);
+      behavior(result, key, value);
+    });
+
+    return result;
+  };
+
+  /**
+   * Splits a collection into sets, grouped by the result of running each value 
+   * through iterator. If iterator is a string instead of a function, groups by 
+   * the property named by iterator on each of the values.
+   *
+   * @param  {Array|Table}     list     an array or table to group the values of
+   * @param  {Function|String} iterator function that generates a group name
+   * @param  {Table}           context  optional context to call iterator with
+   * @return {Table}                    a new table containing grouped values
+   */
+  _.groupby <- _.groupBy <- function(list, iterator = _.identity, context = this) {
+    return groupHelper(list, iterator, function(result, key, value) {
+      local group = null;
+
+      if(_.has(result, key)) {
+        group = result[key];
+      } else {
+        result[key] <- [];
+        group = result[key];
+      }
+
+      group.push(value);
+    }, context);
+  };
+
   /**
    * Return the number of values in the list.
    *
