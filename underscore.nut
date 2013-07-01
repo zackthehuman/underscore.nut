@@ -759,6 +759,38 @@ return (function(root) {
   };
 
   /**
+   * Merges together the values of each of the arrays with the values at the
+   * corresponding position. Useful when you have separate data sources that are
+   * coordinated through matching array indexes.
+   *
+   * @param  {Array} ... one or more arrays to zip together
+   * @return {Array}     an array zipped value groups
+   */
+  _.zip <- function(...) {
+    local length = _.max(_.map(vargv, function(val, ...) {
+      return val.len();
+    }));
+
+    local result = [];
+
+    for(local i = 0; i < length; i++) {
+      local zippedValues = [];
+
+      foreach(arg, arr in vargv) {
+        if(arr.len() > i) {
+          zippedValues.push(arr[i]);
+        } else {
+          zippedValues.push(null);
+        }
+      }
+
+      result.push(zippedValues);
+    }
+
+    return result;
+  };
+
+  /**
    * Converts arrays into tables. Pass either a single list of `[slot, value]`
    * pairs, or a list of slots, and a list of values.
    *
