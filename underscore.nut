@@ -888,6 +888,61 @@ return (function(root) {
     return low;
   };
 
+  /**
+   * A function to create flexibly-numbered lists of integers, handy for each 
+   * and map loops. start, if omitted, defaults to 0; step defaults to 1. 
+   * Returns a list of integers from start to limit, incremented (or 
+   * decremented) by a step value, exclusive.
+   *
+   * @example
+   * _.range(5);       // => [0, 1, 2, 3, 4]
+   * _.range(1, 5);    // => [1, 2, 3, 4]
+   * _.range(0, 5, 2); // => [0, 2, 4]
+   *
+   * @param  {Float|Integer} limit if the only argument then this value is the
+   *                               upper limit (from 0) of the range, exclusive,
+   *                               otherwise if 2 or more arguments are given,
+   *                               this is the start value of the range
+   * @param  {Float|Integer} ...   if two arguments are given the second one is
+   *                               the upper limit of the range, otherwise if
+   *                               more than two arguments are given then the
+   *                               third argument is the step value
+   * @return {Array}               an array of calculated values for the range
+   */
+  _.range <- function(limit, ...) {
+    local start = 0;    // default
+    local stop = limit; // default
+    local step = 1;     // default
+
+    if(vargv.len() == 1) {
+      // Specified a start and stop
+      start = limit;
+      stop = vargv[0];
+    } else if(vargv.len() > 1) {
+      // Specified start, stop, and step
+      start = limit;
+      stop = vargv[0];
+      step = vargv[1];
+    }
+
+    local length = (((stop - start) / step)).tointeger(); // ceiling integer
+    local index = 0;
+
+    // Can't have negative length...
+    if(length < 0) {
+      length *= -1;
+    }
+
+    local result = array(length);
+
+    while(index < length) {
+      result[index++] = start;
+      start += step;
+    }
+
+    return result;
+  };
+
 
   //
   // Table Functions
