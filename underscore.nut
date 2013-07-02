@@ -856,6 +856,39 @@ return (function(root) {
     return lastIndex;
   };
 
+  /**
+   * Uses a binary search to determine the index at which the value should be 
+   * inserted into the list in order to maintain the list's sorted order. If an
+   * iterator is passed, it will be used to compute the sort ranking of each 
+   * value, including the value you pass.
+   * 
+   * @param  {Array}    arr      an array to search through
+   * @param  {Value}    item     the item to find the sorted index of
+   * @param  {Function} iterator an optional sort ranking transform function
+   * @param  {Table}    context  an optional table to execute the transform with
+   * @return {Number}            the index at which item could be inserted into
+   *                             arr and still maintain sorted order
+   */
+  _.sortedindex <- _.sortedIndex <- function(arr, item, iterator = _.identity, context = this) {
+    iterator = iterator == null ? _.identity : lookupIterator(iterator);
+    
+    local value = iterator.call(context, item);
+    local low = 0;
+    local high = arr.len();
+
+    while(low < high) {
+      local mid = (low + high) / 2;
+      if(iterator.call(context, arr[mid]) < value) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    return low;
+  };
+
+
   //
   // Table Functions
   //
