@@ -834,6 +834,28 @@ return (function(root) {
     return -1;
   };
 
+  /**
+   * Returns the index of the last occurrence of value in the array, or -1 if 
+   * value is not present. Pass fromIndex to start your search at a given index.
+   *
+   * @param  {Array}   arr       an array to search through
+   * @param  {Value}   item      the value to search for in array
+   * @param  {Integer} fromIndex optional starting index to begin searching from
+   * @return {Integer}           last index of item in arr or -1 if not found
+   */
+  _.lastindexof <- _.lastIndexOf <- function(arr, item, fromIndex = 0) {
+    local lastIndex = -1;
+    local length = arr.len();
+
+    for(local index = fromIndex; index < length; index++) {
+      if(arr[index] == item) {
+        lastIndex = index;
+      }
+    }
+
+    return lastIndex;
+  };
+
   //
   // Table Functions
   //
