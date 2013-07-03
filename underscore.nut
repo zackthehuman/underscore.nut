@@ -943,6 +943,39 @@ return (function(root) {
     return result;
   };
 
+  //
+  // Functuion Functions
+  //
+  
+  /**
+   * Creates a version of the function that can only be called one time. 
+   * Repeated calls to the modified function will have no effect, returning the 
+   * value from the original call. Useful for initialization functions, instead 
+   * of having to set a boolean flag and then check it later.
+   *
+   * @param  {Function} func a function to wrap
+   * @return {Function}      a new function that only calls func the first time
+   *                         it executes
+   */
+  _.once <- function(func) {
+    local ran = false;
+    local memo = null;
+
+    return function(...) {
+      if(ran) {
+        return memo;
+      }
+
+      local args = [this];
+      args.extend(vargv);
+
+      ran = true;
+      memo = func.acall(args);
+      func = null;
+
+      return memo;
+    };
+  };
 
   //
   // Table Functions
