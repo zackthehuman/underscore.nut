@@ -947,6 +947,15 @@ return (function(root) {
   // Functuion Functions
   //
   
+  // bind
+  // bindAll
+  // partial
+  // memoize
+  // delay?
+  // defer?
+  // throttle?
+  // debounce?
+  
   /**
    * Creates a version of the function that can only be called one time. 
    * Repeated calls to the modified function will have no effect, returning the 
@@ -975,6 +984,31 @@ return (function(root) {
 
       return memo;
     };
+  };
+
+  /**
+   * Creates a version of the function that will only be run after first being
+   * called count times.
+   *
+   * @param  {Integer}  times the number of times to require calling before
+   *                          execution of func
+   * @param  {Function} func  the function to delay execution of
+   * @return {Function}       a new function that only executes func after being
+   *                          called the specified number of times
+   */
+  _.after <- function(times, func) {
+    if(times <= 0) {
+      return func();
+    }
+
+    return function(...) {
+      if(--times < 1) {
+        local args = [this];
+        args.extend(vargv);
+
+        return func.acall(args);
+      }
+    }
   };
 
   //
